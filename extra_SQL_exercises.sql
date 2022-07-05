@@ -142,3 +142,133 @@ LIMIT 10;
 
 -- JOIN STATEMENTS
 -- 9.a Select customer first and last name and actor first and last name performing a left join
+SELECT customer.first_name AS customer_first_name, customer.last_name AS customer_last_name, actor.first_name AS actor_first_name, actor.last_name AS actor_last_name
+FROM customer
+LEFT JOIN actor ON customer.last_name = actor.last_name;
+-- 9.b Same as above but as a right join
+SELECT customer.first_name AS customer_first_name, customer.last_name AS customer_last_name, actor.first_name AS actor_first_name, actor.last_name AS actor_last_name
+FROM customer
+RIGHT JOIN actor ON customer.last_name = actor.last_name;
+-- 9.c Same as above but as an inner join
+SELECT customer.first_name AS customer_first_name, customer.last_name AS customer_last_name, actor.first_name AS actor_first_name, actor.last_name AS actor_last_name
+FROM customer
+JOIN actor ON customer.last_name = actor.last_name;
+-- 9.d Select city name and country name from city table performing left join with country
+-- table to get country name column
+SELECT city.city_id, city.country_id AS city_country_id, country.country_id AS country_country_id, country.country
+FROM city
+LEFT JOIN country ON city.country_id = country.country_id;
+-- 9.e Select title, description, release year, and language from film table. Perform
+-- left join with language table to get language column. Label language.name as "language"
+SELECT film.title, film.description, film.release_year, film.language_id AS film_lang_id, language.language_id AS lang_lang_id, language.name AS "language"
+FROM film
+LEFT JOIN language ON film.language_id = language.language_id;
+-- 9.f Select first name, last name, address, address2, city name, district, and postal code
+-- from staff table. Perform 2 left joins with address table then city table to get address
+-- and city related columns
+SELECT staff.first_name, staff.last_name, staff.address_id AS staff_address_id, 
+address.address_id AS address_address_id, address.address, address.address2, address.city_id AS address_city_id, address.district, address.postal_code,
+city.city_id AS city_city_id, city.city AS city_name
+FROM staff
+LEFT JOIN address ON staff.address_id = address.address_id
+LEFT JOIN city ON address.city_id = city.city_id;
+
+
+-- MORE DRILLS
+
+-- 1. Display the first and last names in all lowercase of all the actors.
+SELECT LOWER(first_name), LOWER(last_name)
+FROM actor;
+
+-- 2. You need to find the ID number, first name, and last name of an actor, of whom you 
+-- know only the first name, "Joe." What is one query would you could use to obtain this 
+-- information?
+SELECT actor_id, first_name, last_name
+FROM actor
+WHERE first_name = "Joe";
+
+-- 3. Find all actors whose last name contain the letters "gen":
+SELECT *
+FROM actor
+WHERE last_name LIKE '%gen%';
+
+-- 4. Find all actors whose last names contain the letters "li". This time, order the rows
+-- by last name and first name, in that order.
+SELECT *
+FROM actor
+WHERE last_name LIKE '%li%'
+ORDER BY last_name, first_name;
+
+-- 5. Using IN, display the country_id and country columns for the following countries: 
+-- Afghanistan, Bangladesh, and China:
+SELECT *
+FROM country
+WHERE country IN ('Afghanistan', 'Bangladesh', 'China');
+
+-- 6. List the last names of all the actors, as well as how many actors have that last name.
+SELECT last_name, COUNT(last_name) AS Count
+FROM actor
+GROUP BY last_name;
+
+-- 7. List last names of actors and the number of actors who have that last name, but only 
+-- for names that are shared by at least two actors
+SELECT last_name, COUNT(last_name) AS count
+FROM actor
+GROUP BY last_name
+HAVING COUNT(last_name) >= 2;
+
+-- 8. You cannot locate the schema of the address table. Which query would you use to 
+-- recreate it?
+SHOW TABLES;
+DESCRIBE address;
+
+-- 9. Use JOIN to display the first and last names, as well as the address, of each staff 
+-- member.
+SELECT staff.first_name, staff.last_name, staff.address_id AS staff_address_id, address.address_id AS address_id, address.address
+FROM staff
+LEFT JOIN address ON staff.address_id = address.address_id;
+
+-- 10. Use JOIN to display the total amount rung up by each staff member in August of 2005.
+SELECT staff.first_name, staff.last_name, staff.staff_id AS staff_id, payment.staff_id AS payment_staff_id, SUM(payment.amount)
+FROM staff
+LEFT JOIN payment ON staff.staff_id = payment.staff_id
+GROUP BY staff.staff_id;
+
+-- 11. List each film and the number of actors who are listed for that film.
+SELECT film.film_id AS film_film_id, film.title, film_actor.film_id AS actor_film_id, SUM(film_actor.actor_id)
+FROM film
+LEFT JOIN film_actor ON film.film_id = film_actor.film_id
+GROUP BY film.film_id;
+
+-- 12. How many copies of the film Hunchback Impossible exist in the inventory system?
+SELECT film.film_id AS film_film_id, film.title, inventory.film_id AS inventory_film_id
+FROM film
+LEFT JOIN inventory ON film.film_id = inventory.film_id
+WHERE film.title = 'Hunchback Impossible';
+
+-- 13. The music of Queen and Kris Kristofferson have seen an unlikely resurgence. As an 
+-- unintended consequence, films starting with the letters K and Q have also soared in 
+-- popularity. Use subqueries to display the titles of movies starting with the letters K 
+-- and Q whose language is English.
+
+
+-- 14. Use subqueries to display all actors who appear in the film Alone Trip.
+
+
+-- 15. You want to run an email marketing campaign in Canada, for which you will need the 
+-- names and email addresses of all Canadian customers.
+
+
+-- 16. Sales have been lagging among young families, and you wish to target all family 
+-- movies for a promotion. Identify all movies categorized as famiy films.
+
+
+-- 17. Write a query to display how much business, in dollars, each store brought in.
+
+
+-- 18. Write a query to display for each store its store ID, city, and country.
+
+
+-- 19. List the top five genres in gross revenue in descending order. (Hint: you may need 
+-- to use the following tables: category, film_category, inventory, payment, and rental.)
+

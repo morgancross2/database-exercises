@@ -1,3 +1,5 @@
+-- Exercises found at https://ds.codeup.com/sql/more-exercises/
+
 USE sakila;
 -- SELECT STATEMENTS
 -- 1.a Select all columns from the actor table.

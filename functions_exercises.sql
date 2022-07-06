@@ -127,7 +127,8 @@ SELECT first_name, last_name, datediff(CURDATE(),hire_date) AS employed_length
 
 -- 5. Find the smallest and largest current salary from the salaries table.
 SELECT MAX(salary), MIN(salary)
-FROM salaries;
+FROM salaries
+WHERE to_date > CURDATE();
 
 -- 6. Use your knowledge of built in SQL functions to generate a username for all of the 
 -- employees. A username should be all lowercase, and consist of the first character of the 

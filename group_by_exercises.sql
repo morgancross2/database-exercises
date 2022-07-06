@@ -47,26 +47,64 @@ GROUP BY first_name, gender;
 -- 8. Using your query that generates a username for all of the employees, generate a count
 -- employees for each unique username. Are there any duplicate usernames? BONUS: How many 
 -- duplicate usernames are there?
+SELECT LOWER(CONCAT(SUBSTR(first_name,1,1),SUBSTR(last_name,1,4),'_',SUBSTR(birth_date,6,2),SUBSTR(birth_date,3,2))) AS username,
+count(*) AS count
+FROM employees
+GROUP BY username
+ORDER BY count DESC;
+-- Yes there are duplicates. 
 
 -- 9. Bonus: More practice with aggregate functions:
 
 -- 9.a Determine the historic average salary for each employee. When you hear, read, or 
 -- think "for each" with regard to SQL, you'll probably be grouping by that exact column.
+SELECT emp_no, AVG(salary)
+FROM salaries
+GROUP BY emp_no;
 
 -- 9.b Using the dept_emp table, count how many current employees work in each department.
 -- The query result should show 9 rows, one for each department and the employee count.
+SELECT dept_no, count(emp_no)
+FROM dept_emp
+GROUP BY dept_no;
 
 -- 9.c Determine how many different salaries each employee has had. This includes both
 -- historic and current.
+SELECT emp_no, count(salary)
+FROM salaries
+GROUP BY emp_no
+LIMIT 10;
 
 -- 9.d Find the maximum salary for each employee.
+SELECT emp_no, MAX(salary)
+FROM salaries
+GROUP BY emp_no
+LIMIT 10;
 
 -- 9.e Find the minimum salary for each employee.
+SELECT emp_no, MIN(salary)
+FROM salaries
+GROUP BY emp_no
+LIMIT 10;
 
 -- 9.f Find the standard deviation of salaries for each employee.
+SELECT emp_no, STDDEV(salary)
+FROM salaries
+GROUP BY emp_no
+LIMIT 10;
 
 -- 9.g Now find the max salary for each employee where that max salary is greater than
 -- $150,000.
+SELECT emp_no, MAX(salary) AS max
+FROM salaries
+GROUP BY emp_no
+HAVING max > 150000
+LIMIT 10;
 
 -- 9.h Find the average salary for each employee where that average salary is between $80k
 -- and $90k.
+SELECT emp_no, AVG(salary) AS avg
+FROM salaries
+GROUP BY emp_no
+HAVING avg BETWEEN 80000 AND 90000
+LIMIT 10;

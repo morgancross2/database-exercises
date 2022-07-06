@@ -45,14 +45,21 @@ WHERE first_name IN ('Irena','Vidya','Maya')
 GROUP BY first_name, gender;
 
 -- 8. Using your query that generates a username for all of the employees, generate a count
--- employees for each unique username. Are there any duplicate usernames? BONUS: How many 
--- duplicate usernames are there?
+-- employees for each unique username. Are there any duplicate usernames? 
 SELECT LOWER(CONCAT(SUBSTR(first_name,1,1),SUBSTR(last_name,1,4),'_',SUBSTR(birth_date,6,2),SUBSTR(birth_date,3,2))) AS username,
 count(*) AS count
 FROM employees
 GROUP BY username
 ORDER BY count DESC;
 -- Yes there are duplicates. 
+-- BONUS: How many duplicate usernames are there?
+SELECT LOWER(CONCAT(SUBSTR(first_name,1,1),SUBSTR(last_name,1,4),'_',SUBSTR(birth_date,6,2),SUBSTR(birth_date,3,2))) AS username,
+count(*) AS count
+FROM employees
+GROUP BY username
+HAVING count > 1
+ORDER BY count DESC;
+-- 13251 usernames have at least 1 duplicate
 
 -- 9. Bonus: More practice with aggregate functions:
 

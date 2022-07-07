@@ -12,6 +12,10 @@ FROM actor;
 SELECT film_id, title, release_year 
 FROM film;
 
+SELECT first_name 
+FROM actor 
+WHERE first_name REGEXP '^to';
+
 -- DISTINCT STATEMENTS
 -- 2.a Select all distinct last names from the actor table
 SELECT DISTINCT last_name 
@@ -487,16 +491,121 @@ SELECT Name, LocalName
 FROM country
 WHERE Name != LocalName;
 
+
+-- X = Warszawa
 -- 8. How many countries have a life expectancy less than x?
 
 
 -- 9. What state is city x located in?
-
+SELECT District
+FROM city
+WHERE Name = 'Warszawa';
 
 -- 10. What region of the world is city x located in?
-
+SELECT country.Region
+FROM city
+LEFT JOIN country ON city.CountryCode = country.Code
+WHERE city.Name = 'Warszawa';
 
 -- 11. What country (human readable anme) is city x located in?
-
+SELECT country.Name
+FROM city
+LEFT JOIN country ON city.CountryCode = country.Code
+WHERE city.Name = 'Warszawa';
 
 -- 12. What is the life expectancy in city x?
+SELECT country.LifeExpectancy
+FROM city
+LEFT JOIN country ON city.CountryCode = country.Code
+WHERE city.Name = 'Warszawa';
+
+
+-- ADVANCED: PIZZA DATABASE
+-- Use the pizza database to answer the following questions.
+USE pizza;
+
+-- 1. What information is stored in the toppings table? How does this table relate to the 
+-- pizzas table?
+SELECT * FROM toppings LIMIT 10;
+SELECT * FROM pizzas LIMIT 10;
+-- They relate to each other through the pizza_toppings table. Each pizza id is tied to
+-- its respective topping ids.
+SELECT * FROM pizza_toppings LIMIT 10;
+
+-- 2. What information is stored in the modifiers table? How does this table relate to the
+-- pizzas table?
+SELECT * FROM modifiers LIMIT 10;
+SELECT * FROM pizza_modifiers LIMIT 10;
+-- They are related through the pizza_modifiers table. Each pizza id is tied to all
+-- combinations of the modifiers (should they be ordered)
+
+-- 3. How are the pizzas and sizes tables related?
+SELECT * FROM sizes LIMIT 10;
+-- The pizzas table links to every size option via size_id and the size table provides price
+
+-- 4. What other tables are in the database?
+-- crust_types
+SELECT * FROM crust_types;
+
+-- 5. How many unique toppings are there?
+	-- 9 unique toppings
+
+-- 6. How many unique orders are in this dataset?
+	-- 4 sizes (pick 1), 9 toppings (pick 9!), 3 modifiers (pick 1x3 or pick 2x2), 
+	-- 2 crust types (pick 1) = 4*9!*6*2 = 17,418,240 unique orders
+SELECT * FROM pizzas LIMIT 10;
+
+-- 7. Which size of pizza is sold the most?
+SELECT sizes.size_name, count(*)
+FROM pizzas
+LEFT JOIN sizes USING(size_id)
+GROUP BY sizes.size_name;
+-- Large is ordered the most
+
+-- 8. How many pizzas have been sold in total?
+SELECT * FROM pizzas;
+-- 20001 pizzas have been sold
+
+-- 9. What is the most common size of pizza ordered?
+-- See #7.
+
+-- 10. What is the average number of pizzas per order?
+SELECT AVG(g.count)
+FROM (SELECT count(pizza_id) AS count
+		FROM pizzas
+        GROUP BY order_id)
+        as g;
+
+-- 11. Find the total price for each order. Topping price is affected by the amount of the 
+-- topping specified. A light amount is half of the regular price. An extra amount is 1.5 
+-- times the regular price, and double of the topping is double the price.
+-- The total price is the sum of:
+	-- The price based on pizza size
+	-- Any modifiers that need to be charged for
+	-- The sum of the topping prices
+
+
+
+-- ADDITIONAL PIZZA QUESTIONS:
+-- 12. What is the average price of pizzas that have no cheese?
+-- 13. What is the most common size for pizzas that have extra cheese?
+-- 14. What is the most common topping for pizzas that are well done?
+-- 15. How many pizzas are only cheese (i.e. have no toppings)?
+-- 16. How many orders consist of pizza(s) that are only cheese? What is the average price 
+-- of these orders? The most common pizza size?
+-- 17. How may large pizzas have olives on them?
+-- 18. What is the average number of toppings per pizza?
+-- 19. What is the average number of pizzas per order?
+-- 20. What is the average pizza price?
+-- 21. What is the average order total?
+-- 22. What is the average number of items per order?
+-- 23. What is the average number of toppings per pizza for each size of pizza?
+-- 24. What is the average order total for orders that contain more than 1 pizza?
+-- 25. What is the most common pizza size for orders that contain only a single pizza?
+-- 26. How many orders consist of 3+ pizzas? What is the average number of toppings for 
+-- these orders?
+-- 27. What is the most common topping on large and extra large pizzas?
+-- 28. What is the most common topping for orders that consist of 2 pizzas?
+-- 29. Which size of pizza most frequently has modifiers?
+-- 30. What percentage of pizzas with hot sauce have extra cheese?
+-- 31. What is the average order price for orders that have at least 1 pizza with pineapple?

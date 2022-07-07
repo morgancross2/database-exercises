@@ -159,9 +159,9 @@ LIMIT 1;
 -- your results.
 SELECT departments.dept_name, ROUND(AVG(salaries.salary)) AS average_salary
 FROM departments
-LEFT JOIN dept_emp
+JOIN dept_emp
 	USING(dept_no)
-LEFT JOIN salaries
+JOIN salaries
 	USING(emp_no)
 GROUP BY departments.dept_name
 ORDER BY average_salary DESC;
@@ -172,17 +172,17 @@ SELECT CONCAT(employees.first_name, ' ', employees.last_name) AS Employee_Name,
 	departments.dept_name AS Department_Name,
     g.name AS Manager_Name
 FROM employees
-LEFT JOIN dept_emp
+JOIN dept_emp
 	USING(emp_no)
-LEFT JOIN departments
+JOIN departments
 	USING (dept_no)
-LEFT JOIN (
+JOIN (
 	SELECT 
 		CONCAT(employees.first_name, ' ', employees.last_name) AS name,
 		dept_manager.dept_no, 
 		dept_manager.to_date
     FROM dept_manager
-	LEFT JOIN employees 
+	JOIN employees 
 		USING (emp_no)
 	) as g
 -- dept_manager
@@ -203,14 +203,14 @@ SELECT
 	departments.dept_name AS deptname,
     MAX(salaries.salary) AS salary
 FROM departments
-LEFT JOIN dept_emp USING(dept_no)
-LEFT JOIN salaries USING(emp_no)
+JOIN dept_emp USING(dept_no)
+JOIN salaries USING(emp_no)
 WHERE dept_emp.to_date > CURDATE()
 AND salaries.to_date > CURDATE()
 GROUP BY departments.dept_name
     ) as g
-LEFT JOIN salaries ON g.salary = salaries.salary
-LEFT JOIN employees USING(emp_no)
+JOIN salaries ON g.salary = salaries.salary
+JOIN employees USING(emp_no)
 ORDER BY Department_Name;
 
 -- Below was first attempt from reverse order. 

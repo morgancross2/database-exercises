@@ -23,9 +23,10 @@ USE employees;
 	-- INNER - Find all current employees named Aamod
 		SELECT emp_no
         FROM employees
-        JOIN dept_emp USING(emp_no)
-        WHERE first_name = 'Aamod'
-        AND to_date > CURDATE();
+        WHERE emp_no IN (SELECT emp_no
+						FROM dept_emp
+						WHERE to_date > CURDATE())
+		AND first_name = 'Aamod';
     
     -- OUTER - Find all the titles held by an employee
 		SELECT title
@@ -37,10 +38,11 @@ USE employees;
     SELECT title
         FROM titles
         WHERE emp_no IN (SELECT emp_no
-				FROM employees
-				JOIN dept_emp USING(emp_no)
-				WHERE first_name = 'Aamod'
-				AND to_date > CURDATE())
+						FROM employees
+						WHERE emp_no IN (SELECT emp_no
+										FROM dept_emp
+										WHERE to_date > CURDATE())
+						AND first_name = 'Aamod')
 		GROUP BY title;
 
 
@@ -79,13 +81,14 @@ USE employees;
     AND to_date > CURDATE();
     
     -- COMBINED
-	SELECT emp_no, dept_no, CONCAT(first_name, ' ', last_name)
-    FROM dept_manager
-    JOIN employees USING (emp_no)
+	SELECT emp_no, CONCAT(first_name, ' ', last_name)
+    FROM employees
     WHERE emp_no IN (SELECT emp_no
-					FROM employees
-					WHERE gender = 'F')
-					AND to_date > CURDATE();
+					FROM dept_manager
+                    WHERE to_date > CURDATE())
+	AND gender = 'F';
+    
+    -- Isamu Legleitner, Karsten Sigstam, Leon DasSarma, Hilary Kambil
 
 -- 5. Find all the employees who currently have a higher salary than the companies overall, 
 -- historical average salary.
@@ -100,13 +103,14 @@ USE employees;
     WHERE salary > (56322)
     AND to_date > CURDATE();
     
-    -- COMBINED
-	SELECT CONCAT(first_name, ' ', last_name), salary
+    -- COMBINED - 154543
+	SELECT CONCAT(first_name, ' ', last_name)
     FROM employees
-    JOIN salaries USING (emp_no)
-    WHERE salary > (SELECT AVG(salary)
-					FROM salaries)
-    AND to_date > CURDATE();
+    WHERE emp_no IN (SELECT emp_no
+					FROM salaries
+					WHERE salary > (SELECT AVG(salary)
+									FROM salaries)
+					AND to_date > CURDATE());
 
 -- 6. How many current salaries are within 1 standard deviation of the current highest 
 -- salary? What percentage of all salaries is this?
@@ -142,13 +146,15 @@ USE employees;
 -- BONUS
 
 -- 1. Find all the department names that currently have female managers.
+-- Finance, Human Resources, Development, Research
 SELECT dept_name
 FROM departments
-JOIN dept_manager USING (dept_no)
-WHERE emp_no IN (SELECT emp_no
-					FROM employees
-					WHERE gender = 'F')
-					AND to_date > CURDATE();
+WHERE dept_no IN (SELECT dept_no
+					FROM dept_manager
+                    WHERE emp_no IN (SELECT emp_no
+									FROM employees
+                                    WHERE gender = 'F')
+					AND to_date > CURDATE());
                     
 -- 2. Find the first and last name of the employee with the highest salary.
 SELECT CONCAT(first_name, ' ', last_name)

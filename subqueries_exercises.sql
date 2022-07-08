@@ -17,7 +17,10 @@ USE employees;
     FROM employees
     WHERE hire_date = (SELECT hire_date
 						FROM employees
-						WHERE emp_no = 101010);
+						WHERE emp_no = 101010)
+	AND emp_no IN (SELECT emp_no
+						FROM dept_emp
+                        WHERE to_date > CURDATE());
 
 -- 2. Find all the titles ever held by all current employees with the first name Aamod.
 	-- INNER - Find all current employees named Aamod
@@ -63,9 +66,8 @@ USE employees;
     SELECT count(*)
     FROM employees
     WHERE emp_no NOT IN (SELECT emp_no
-						FROM titles
-						WHERE to_date > CURDATE()
-						GROUP BY emp_no);
+						FROM dept_emp
+						WHERE to_date > CURDATE());
 
 -- 4. Find all the current department managers that are female. List their names in a 
 -- comment in your code.
@@ -82,11 +84,11 @@ USE employees;
     
     -- COMBINED
 	SELECT emp_no, CONCAT(first_name, ' ', last_name)
-    FROM employees
-    WHERE emp_no IN (SELECT emp_no
-					FROM dept_manager
-                    WHERE to_date > CURDATE())
-	AND gender = 'F';
+		FROM employees
+		WHERE emp_no IN (SELECT emp_no
+						FROM dept_manager
+						WHERE to_date > CURDATE())
+		AND gender = 'F';
     
     -- Isamu Legleitner, Karsten Sigstam, Leon DasSarma, Hilary Kambil
 

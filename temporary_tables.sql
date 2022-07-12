@@ -85,6 +85,7 @@ CREATE TEMPORARY TABLE leavitt_1866.sd (
     
    USE leavitt_1866; 
 SELECT * FROM sd;
+-- will be easier to pull whole table needed into local temp table prior to crunching numbers and table
 
 
 
@@ -93,11 +94,12 @@ SELECT * FROM sd;
 
 -- Returns the historic z-scores for each salary
 -- Notice that there are 2 separate scalar subqueries involved
-SELECT salary,
-    (salary - (SELECT AVG(salary) FROM salaries))
-    /
-    (SELECT stddev(salary) FROM salaries) AS zscore
-FROM salaries;
+
+-- SELECT salary,
+--     (salary - (SELECT AVG(salary) FROM salaries))
+--     /
+--     (SELECT stddev(salary) FROM salaries) AS zscore
+-- FROM salaries;
 
         
 -- BONUS To your work with current salary zscores, determine the overall historic average departement average salary,
